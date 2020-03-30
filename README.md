@@ -1,2 +1,3 @@
 # Raw-Material--Intermediate-Goods-Import---Industrial-Production-Index-and-export-Modeling-Analazing
- 
+ Özet Çalışmamızda
+ 2007-2019 yılları arasında Türkiye’deki hammadde-aramalı ithalatı ihracat ve sanayi üretiminin reel efektif döviz kuru, reel kredi hacmi, OECD ülkelerinin sanayi üretiminden nasıl etkilendiği, ekonometrik yöntemler kullanılarak analiz edilmiş ve verilen modeller arasındaki ilişkiler ele alınmıştır. R Studio 3.6.0 programı kullanılarak modelimizdeki değişken tahminleri ve analizleri yapılmıştır. Modelde gözlemlenen ekonometrik sorunlar Hausman eşanlılık testi, içsel bağıntı testi (Breusch-Godfrey LM Testi), değişen varyans testleri (WHİTE, ARCH) ve RAMSEY RESET testleri ile incelenmiştir. Çalışmanın sonunda katsayıların ve modelin genel yorumu yapılmıştır.
