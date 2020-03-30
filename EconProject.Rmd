@@ -1,0 +1,809 @@
+---
+title: "HAMMADDE-ARAMALI İTHALATI, SANAYİ ÜRETİM ENDEKSİ VE İHRACAT MODELİ"
+author:   
+  - Sinem Şenel[14080154]
+  - Kardelen Kaya[15080084]
+  - Eray Tekten[14080158]
+  - Gizem Güzel[14080561]
+  - Elif Ekinci[14080112]
+
+date: "8 Mayıs 2019"
+output: pdf_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = "markup")
+```
+
+## Özet
+Çalışmamızda 2007-2019 yılları arasında Türkiye’deki hammadde-ara malı ithalatı ihracat ve sanayi üretiminin reel efektif döviz kuru, reel kredi hacmi, OECD ülkelerinin sanayi üretiminden nasıl etkilendiği, ekonometrik yöntemler kullanılarak analiz edilmiş ve verilen modeller arasındaki ilişkiler ele alınmıştır. R Studio 3.6.0 programı kullanılarak modelimizdeki değişken tahminleri ve analizleri yapılmıştır.  Modelde gözlemlenen ekonometrik sorunlar Hausman eşanlılık testi, içsel bağıntı testi (Breusch-Godfrey LM Testi), değişen varyans testleri (WHİTE, ARCH) ve RAMSEY RESET testleri ile incelenmiştir. Çalışmanın sonunda katsayıların ve modelin genel yorumu yapılmıştır.
+
+##BÖLÜM1: Çalışmanın Amacı ve Yöntemi
+
+###1.1 Araştırmanın Amacı
+Bu çalışmada  2007-2019 yılları arasında Türkiye’nin  hammadde-ara malı ithalatı, ihracat ve sanayi üretiminin; reel efektif döviz kuru, reel kredi hacmi, OECD ülkelerinin sanayi üretiminden nasıl etkilendiği ekonometrik yöntemler kullanılarak analiz edilmesi amaçlanmıştır.
+
+###1.2 Araştırmanın Yöntemi
+Bu çalışmada 3.6.0 R Studio programı kullanılmıştır.
+Merkez Bankası ve Dünya Bankası verilerinden yararlanılmıştır. 
+Model  6 değişken ve 145 aylık Yüzde değişimleri içeren veriden oluşmaktadır.Modellerin durağan ve doğrusal olduğu varsayılmıştır.Analizler bu varsayım üzerinden yapılacaktır.
+
+###1.3LİTERATÜR
+Literatürde genel anlamda VAR modelleri, regresyon analizleri, sınır testi yaklaşımı, Granger nedensellik testleri kullanılarak çalışmalar yapılmıştır.
+Elde edilen ampirik bulgulara göre ihracat ve ithalattan reel efektif döviz kuruna doğru tek yönlü bir nedensellik olduğu saptanmıştır.
+GSYİH ile hammadde ve yatırım malı ithalatı arasında çift yönlü bir ilişki olduğu; fakat GSYİH tüketim malı ve diğer mallar ithalatı arasında tek yönlü bir ilişki olduğu anlaşılmıştır.
+Kredi hacminin ekonomik büyüme üzerindeki etkisi pozitif ve istatistiki olarak anlamlıdır.
+
+##BÖLÜM2: Modelimiz
+
+2007:01-2019:01 arasındaki veriler aylık yüzde değişimleri alınarak kullanılmıştır. Hammadde- aramalı itahalatı 2003 reel baz yılı ile hesaplanan veriler ile çalışılmıştır.
+
+
+
+###2.1 LaTex Formunda Modeller
+$$
+mh_t = \beta_0 + \beta_1 y_t + \beta_2 reer_t + \varepsilon_t
+$$
+$$
+y_t = \alpha_0 + \alpha_1 mh_t + \alpha_2 rk_t + \alpha_3 reer_t + \varepsilon2_t
+$$
+$$
+x_t = \gamma_0 + \gamma_1 ystar_t + \gamma_2 mh_t + \gamma_3 reer_t + \varepsilon3_t
+$$
+
+İçsel Değişkenler(Endojenler):
+Mht=Hammadde-Aramalı İthalatı 
+Yt=Sanayi Üretim Endeksi(% değişim)
+Xt=ihracat(% değişim)
+
+Dışsal Değişkenler(Eksojenler):
+reer:Reel efektif döviz kuru
+rk: Reel kredi hacmi
+y*: Yurt dışı sanayi üretim endeksi
+
+ 
+####2.1.1 Teorik Açıklama 
+İlk modelde hammadde(ara malı) ithalatının , sanayi üretim endeksinden ve reel efektif döviz kurundan etkilendiği görülmektedir. Sanayi üretim endeksi ise hammadde ara malı ithalatından ,reel efektif döviz kurundan ve reel kredi hacminden etkilenmektedir. Son olarak ihracatın belirleyenleri ise OECD ülkelerinin sanayi üretim endeksi hammadde ara malı ithalatı ve reel efektif dövüz kuru olduğu görülmektedir. Modellerde gecikmeli değişken ve kukla değişken bulunmamaktadır. Sağ taraf değişkenlerinin sol taraf değişkenlerini kaç birim etkilediğini katsayı tahminleri kullanılarak yorumlanacaktır.
+
+ 
+###2.2 Katsayıların Beklenen İşaretleri
+
+Öncelikle katsayıların beklenen işaretleri iktisadi yorumlar çerçevesinde tahmin edilmiştir.
+
+1Model için;
+beta1 > 0 (Yt)
+beta2 < 0 (reer) 
+
+
+2.Model İçin;
+alpha1 > 0 (Mh)
+alpha2 > 0 (rk)
+
+
+3.Model için;
+gamma1 >0 (y*)
+gamma2 >0 (mh)
+gamma3 >0 (reer)
+
+
+###2.3 Ayırt Etme
+Yapısal parametrelerin değerlerinin elde edilebilmesi için eşanlı denklem modellerinin ayrı ayrı belirlenebilir olması gerekir.Modellerin tahmini için önce sıra ve aşama koşullarına bakılmalıdır.
+
+g*: sistemde bulunan fakat modelde bulunmayan içsel değişken sayısıdır.
+
+k*: sistemde bulunan fakat modelde bulunmayan dışsal değişken sayısıdır.
+
+k:ele alınan modelde önceden belirlenmiş değişken sayısı
+
+g:ele alınan modeldeki endojen değişken sayısı
+
+G:sistemdeki endojen değişken sayısı
+
+K:sistemdeki önceden belirlenmiş değişken sayısı
+
+
+
+$G = mh_t , y_t , x_t$
+
+$K = reer_t , rk_t , ystar_t , 1$
+
+###2.4 Sıra Koşulu
+
+$[\ g^{*} + \ k^{*}] \ge G - 1$
+
+1. Model
+
+$k =reer_t , 1$  
+
+$k^{*} = rk_t , ystar_t$  
+
+$3 \ge 2$
+
+fazladan ayırt edilmiştir.
+
+2. Model
+
+$k = rk_t , 1$  
+
+$k^{*} = ystar _t$  
+
+$3 \ge 2$
+
+fazladan ayırt edilmiştir.
+
+3. Model
+
+$k = reer_t , ystar_t$  
+
+$k^{*} = rk_t  1$   
+
+$2 \ge 2$
+
+tam ayırt edilmiştir.
+
+Sıra koşulu yeterli bir koşul olmadığından rank/aşama koşuluna bakarız.
+
+###2.5 Aşama Koşulu
+
+$$\varepsilon_1t = mh_t - \beta_0 + \beta_1 y_t + \beta_2 reer_t$$
+
+$$\varepsilon_2t = y_t - \alpha_0 + \alpha_1 mh_t + \alpha_2 rk_t + alpha_3 reer_t$$
+
+$$\varepsilon_3t= x_t -\gamma_0 + \gamma_1 ystar_t + \gamma_2 mh_t + \gamma_3 reer_t$$
+
+1.denklem için aşama
+$$\mathbf{S_1} = \left[\begin{array} {rrr}
+0 & -\alpha_2 & 0 \\
+1 & 0 & -\gamma_1 \\
+\end{array}\right]    \begin{vmatrix} S_1 \end{vmatrix} =\begin{vmatrix} 0 & -\alpha_2 \\ 1 & 0 \end{vmatrix} = 0 + \alpha_2 \begin{vmatrix} S_1 \end{vmatrix} \neq 0$$
+
+$r(S_1)$ : 2    
+$r(S_1)$  : G-1
+tam ayırt edilmiş
+
+2.denklem için aşama
+$$\mathbf{S_2} = \left[\begin{array} {rrr}
+0 & -\beta_2 & 0 \\
+1 & -\gamma_3 & -\gamma_1 \\
+\end{array}\right]    \begin{vmatrix} S_2 \end{vmatrix} = \begin{vmatrix} 0 & -\beta_2 \\ 1 & -\beta_3 \end{vmatrix} = 0 + \beta_2 \begin{vmatrix} S_2 \end{vmatrix} \neq 0$$
+
+$r(S_2)$ :2    
+$r(S_2)$ : G - 1 
+Tam Ayırt Edilmiş
+
+Bu modelde aşama koşulu yani rank koşulu sağlanmadığı için sıfır sınırlama yapılmıştır. Kare matrisin determinantının sıfırdan farklı olması amaçlandığı için reel efektif döviz kuru  katsayısı (alpha3)  0 kabul edilmiştir. 
+
+3.denklem için aşama
+$$\mathbf{S_3} = \left[\begin{array} {rrr}
+-\beta_1 & 0 \\
+1 & -\alpha_2  \\
+\end{array}\right]    \begin{vmatrix} S_3 \end{vmatrix} = 0 - (\beta_1 \alpha_2 \begin{vmatrix} S_3 \end{vmatrix} \neq 0$$
+
+$r(S_3)$ :2    
+$r(S_3]$ :  G - 1 
+Tam Ayırt Edilmiş
+
+###2.6 İndirgenmiş Formda Denklemler
+İlk olarak yapısal formdaki denklemlerde endojenler sola, eksojenler sağa toplanır.
+
+$$
+mh_t - \beta_1 y_t = \beta_0 + \beta_2 reer_t + \varepsilon_1t
+$$
+
+$$
+y_t - \alpha_1 mh_t = \alpha_0 + \alpha_2 rk_t + \varepsilon_2t
+$$
+
+$$
+x_t - \gamma_2 mh_t = \gamma_0 + \gamma_1 ystar_t + \gamma_3 reer_t + \varepsilon_3t
+$$
+
+Ardından matris formunda denklemler şu hale getirilir.
+
+$$
+B . Y = \tau . X + \epsilon_t
+$$
+
+
+$$
+\mathbf{B.Y} = \left[\begin{array}
+{rrr}
+1 & -\beta_1 & 0 \\
+-\alpha_1 & 1 & 0 \\
+-\alpha_2 & 0 & 1
+\end{array}\right] 
+$$
+
+Modelde Y yalnız bırakılmak için her iki taraf B matrisinin tersi ile çarpılmıştır.
+
+$$
+B^{-1} . B . Y = B^{-1} . \tau . X + B^{-1} . \varepsilon_t
+$$
+
+$$
+Y = B^{-1} . \tau . X + B^{-1} . \varepsilon_t
+$$
+
+
+$$
+\mathbf{B.Y} = \left[\begin{array}
+{rrr}
+1 & -\beta_1 & 0 \\
+-\alpha_1 & 1 & 0 \\
+-\alpha_2 & 0 & 1
+\end{array}\right] 
+$$
+
+$$
+\tau . X + \varepsilon_t  = \left[\begin{array}
+{rrr}
+ \beta_0 + \beta_2\ reer_t + \varepsilon_1t \\
+\alpha_0 + \alpha_2\ rk_t + \varepsilon_2t \\
+\gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_2t \end{array}\right] 
+$$
+
+
+$$
+\begin{vmatrix} B \end{vmatrix} = 1 \begin{vmatrix} \ 1 & 0\\ 0 & 1 \end{vmatrix} + -\beta_1 \begin{vmatrix}  -\alpha_1 & 0 \ -\gamma_1 & 1 \end{vmatrix} + 0 \begin{vmatrix} -\alpha_1 & 1 \\ -\gamma_2 & 0 \end{vmatrix} = [1 - \beta_1 \alpha_1 ]
+$$
+
+1. model için
+
+$$
+\mathbf{mh_t} = \frac{|B_1|}{|B|} = \frac{{\begin{vmatrix} \beta_0 + \beta_2\ reer_t + \varepsilon_1t & -\beta_1 & 0 \\
+\alpha_0 + \alpha_2\ rk_t + \varepsilon_2t & 1 & 0 \\
+\gamma_ 0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t & 0 & 1
+\end{vmatrix}}}{[{1 - \beta_1 . \alpha_1}]}
+$$
+
+$$
+mh_t = [\beta_0 + \beta_2 reer_t + \varepsilon_1t] . \begin{vmatrix} 1 & 0 \\ 0 & 1 \end{vmatrix} -\beta_1 \begin{vmatrix} \alpha_0 + \alpha_2 rk_t + \varepsilon_2t & 0 \\ \gamma_0 + \gamma_1 ystar_t + \gamma_3 reer_t + \varepsilon_3t & 1 \end{vmatrix} + 0 \begin{vmatrix} \alpha_0 + \alpha_2 rk_t + \varepsilon_2t & 1 \\ \gamma_ 0 + \gamma_1 ystar_t + \gamma_3 reer_t + \varepsilon_3t & 0 \end{vmatrix}
+$$
+
+
+$$
+mh_t= \pi_1 + \pi_2 reer_t + \pi_3 rk_t + \pi_4 ystar_t + \ V_1t
+$$
+
+
+2. model için
+
+$$
+y_t = \frac{|B_2|}{|B|} = \frac{{\begin{vmatrix} 1 & \beta_0 + \beta_2\ reer_t + \varepsilon_1t & 0 \\
+-\alpha_1  & \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t & 0 \\
+-\gamma_2 & \ gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t & 1
+\end{vmatrix}}}{[{1 - \beta_1 \alpha_1}]}
+$$
+
+
+$$
+y_t = 1 \begin{vmatrix} \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t &  0\\
+\ gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t & 1 \end{vmatrix} - [\beta_0 + \beta_2\ reer_t + \varepsilon_1t] \begin{vmatrix} \ -\alpha_1  &  0 \\
+ -\gamma_2 & 1 \end{vmatrix} +0 \begin{vmatrix} -\alpha_1 & \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t
+\\ -\gamma_2 & \gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t \end{vmatrix}
+$$
+
+
+$$
+y_t= \pi_5 + \pi_6 reer_t + \pi_7 rk_t + \pi_8 ystar_t + \ V_2t
+$$
+
+
+
+3. model için
+
+
+$$
+x_t = \frac{|B_3|}{|B|} = \frac{{\begin{vmatrix} 1 & -\beta_1 & \beta_0 + \beta_2\ reer_t + \varepsilon_1t \\
+-\alpha_1\ & 1 &  \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t\\
+-\gamma_2\ & 0 & \gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t
+\end{vmatrix}}}{[{1 - \beta_1 . \alpha_1}]}
+$$
+
+
+$$
+ x_t = 1 \begin{vmatrix} 1 & \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t \\ 0 & \ gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t \end{vmatrix} - \\beta_1 \begin{vmatrix} -\alpha_1 & \alpha_0 + \alpha_2\ rk_t + \varepsilon_2t \\ -\gamma_2 & \gamma_0 + \gamma_1\ ystar_t + \gamma_3\ reer_t + \varepsilon_3t \end{vmatrix} + [\beta_0 + \beta_2\ reer_t + \varepsilon_1t] \begin{vmatrix} -\alpha_1 & 1 \\ -\gamma_2 & 0 \end{vmatrix}
+$$
+
+
+$$
+ x_t= \pi_9 + \pi_10 reer_t + \pi_11 rk_t + \pi_12 ystar_t + \ V_3t
+$$
+
+
+
+```{r, results='markup'}
+library(readr)
+library(tidyverse)
+library(stargazer)
+library(readxl)
+library(xtable)
+library(summarytools)
+library(systemfit)
+library(knitr)
+library(jtools)
+library(devtools)
+library(PoEdata)
+library(gridExtra)
+library(lmtest)
+library(broom)
+library(AER)
+library(car)
+library(sandwich)
+library(strucchange)
+library(plm)
+
+veriler <- read_csv("../veriler.csv")
+data(veriler)
+View(veriler)
+names(veriler) <- c("date", "y", "reer", "rk", "x", "mh", "ystar")
+summary(veriler)
+```
+
+
+
+
+
+
+##BÖLÜM3:En Küçük Kareler İle Tahmin
+```{r}
+myreg1 <- lm(mh ~ y + reer, data = veriler)
+summary(myreg1)
+
+myreg2 <- lm(y ~ mh + rk + reer, data = veriler)
+summary(myreg2)
+
+myreg3 <- lm(x ~ ystar + mh + reer, data = veriler)
+summary(myreg3)
+```
+
+Modellerimiz tam ve fazladan ayırt edildiği için ekk katsayı tahmin değerleri tutarsız, T, F ve R2 istatistikleri yukarı sapmalı hesaplanır. Öncelikle, Modelimizin eşanlılığını test etmemiz gerekiyor. 
+
+```{r}
+
+myregsum1 <- summary(myreg1)
+myregsum2 <- summary(myreg2)
+myregsum3 <- summary(myreg3)
+
+myregsum1$call
+myregsum2$call
+myregsum3$call
+
+myregsum1$residuals %>% head()
+myregsum2$residuals %>% head()
+myregsum3$residuals %>% head()
+
+myregsum1$coefficients
+myregsum2$coefficients
+myregsum3$coefficients
+
+myregsum1$coefficients[,1]
+myregsum2$coefficients[,1]
+myregsum3$coefficients[,1]
+
+myregsum1$sigma
+myregsum2$sigma
+myregsum3$sigma
+
+myregsum1$df
+myregsum2$df
+myregsum3$df
+
+myregsum1$r.squared
+myregsum2$r.squared
+myregsum3$r.squared
+
+myregsum1$adj.r.squared
+myregsum2$adj.r.squared
+myregsum3$adj.r.squared
+
+myregsum1$fstatistic
+myregsum2$fstatistic
+myregsum3$fstatistic
+
+myregsum1$cov.unscaled
+myregsum2$cov.unscaled
+myregsum3$cov.unscaled
+options(scipen = 999)
+
+
+```
+
+
+##BÖLÜM4:HAUSMAN EŞANLILIK TESTİ
+
+```{r}
+icsely <- lm(y ~ reer + rk + ystar, data = veriler)
+what1 <- residuals(icsely)
+step11 <- lm(mh ~ y + reer + what1, data = veriler)
+summary(step11)
+
+icselmh1 <- lm(mh ~ reer + rk + ystar, data = veriler)
+what2 <- residuals(icselmh1)
+step22 <- lm(y ~ mh + rk + reer + what2, data = veriler)
+summary(step22)
+
+icselmh2 <- lm(mh ~ reer + rk + ystar, data = veriler)
+what3 <- residuals(icselmh2)
+step33 <- lm(x ~ mh + ystar + reer + what3, data = veriler)
+summary(step33)
+```
+
+Her modelde içsel olduğunu test edeceğimiz değişkeni indirgenmiş formda yazdık.indirgenmiş formda yazdığımız içsel olduğunu düşündüğümüz değişkenlerin hata terimlerini tahmin edip, ana modellere phat1, phat2 ve phat3 olarak yeni bir değişken olarak ekleyip, bu değişkenlerin katsayılarının anlamlılığını test ettik.
+
+1.model için:
+
+Boş hipotezimiz yt değişkenin birinci modelde eksojen olduğu
+alternatif hipotezimiz ise yt nin eksojen olduğu üzerine kurulmuştur.
+
+H0 : y eksojen 
+Ha : y endojen
+
+prob(what1 için); 0.000000973 < 0.05 olduğu için Ho reddedilir.  y değişkeni mh modelinde içseldir.
+
+
+2.model için:
+
+H0 : mh eksojen
+Ha : mh endojen
+
+prob=0.583 > 0.05  Ho kabul edilir. Mh değişkeni, Yt modelinde dışsaldır.
+
+3.model için:
+
+H0 : mh eksojen
+Ha : mh endojen
+
+prob=0.477 > 0,05 ise Ho kabul edilir. Mh değişkeni x denkleminde dışsaldır.
+İktisadi olarak beklenmeyen sonuçlar ortaya çıktı. Bu nedenle biz modelimizin tahminine Mh ve Xt'yiiçsel varsayarak devam edeceğiz.
+
+##BÖLÜM5:2 Aşamalı En Küçük Kareler
+
+```{r}
+mh.lm <- lm(mh ~ reer + rk + ystar, data = veriler)
+summary(mh.lm)
+veriler$phat1 <- mh.lm$fitted.values
+ikiasamamh.lm <- lm(mh ~ phat1 + reer, data = veriler)
+(ikiaekk1 <- summary(ikiasamamh.lm))
+
+
+y.lm <- lm(y ~ reer + rk + ystar, data = veriler)
+summary(y.lm)
+veriler$phat2 <- y.lm$fitted.values
+ikiasamay.lm <- lm(y ~ phat2 + rk, data = veriler)
+(ikiaekk2 <- summary(ikiasamay.lm))
+
+x.lm <- lm(x ~ reer + rk + ystar, data = veriler)
+summary(x.lm)
+veriler$phat3 <- x.lm$fitted.values
+ikiasamax.lm <- lm(x ~ phat3 + ystar + reer, data = veriler)
+(ikiaekk3 <- summary(ikiasamax.lm))
+```
+
+İKi aşamalı ekk değerlerini tahmin edebilmek için, denklemlerde içsel oldğu halde sağ tarafta bulanan değişkenler indirgenmiş formda ekk ile tahmin edilip, bulunan değerleri ana modellere(yapısal formdaki) tahmin şeklinde eklenip, bu modellerde 2 aşamalı ekk yöntemi ile katsayı değerleri tahmin edilmiştir.2AEKK yapılabilmesi için tam veya aşırı ayırt edilmiş olması gerekir.Küçük örneklemlerde dikkatli olunmalıdır.2AEKK sonuçları tutarlıdır fakat bu sonuçlar her zaman sapmazsızlık ve minimum varyans özelliğini sağlayamazlar.
+
+1. modelde içsel olduğunu düşündüğümüz y değişkeninin tahmin değeri phat1 olarak tanımlanmış ve mh denklemine eklenmiştir. Daha sonra mh denklemine 2 aşamalı en küçük kareler yöntemi uygulanmıştır.Bu işlem her modele ayrı ayrı uygulanmıştır. 
+iki aşamalı ekk ile yapılan katsayı tahmin değerlerinde ekk ile yapılan tahminlere göre R2 değerleri daha açıklayıcı çıksa da modellerde ibs ve dvs testleri henüz yapılmadığı için tahminlerin tutarsız olduğundan şüplenilmektedir.
+
+###BÖLÜM 6: SORUNLARIN TESPİTİ
+
+##6.1 İçsel Bağıntı Sorunu
+
+Otokorelasyon sorunu, hata terimlerinin ardışık olarak birbiriyle ilişkili olması durumudur. İçsel bağıntı sorunun olması katsayı Ekk tahminlerinin sapmalı olması olmasına sebep olur. Model asimtotik etkinlik özelliği kaybolur. Modelimizde aylık veriler kullandığımız için 12. dereceden ibs varlığını test ettik. bunun için de en genel bir test olan 5 aşamalı bg-lm testini kullandık.
+bu test, model 2 aşamalı ekk ile tahmin edildikten sonra, hata teriminin tahminin indirgenmiş formda yazılıp, tekrar ekk ile tahmin edilmesi sonucunda çıkan tahmin değerinin ''p'' gecikme sayısı olmak üzere p katsayısı ile çarpılarak modele eklenmesiyle bulunur. en sonda elde edilen genişletilmiş modelin yeni hata terimi 2 aşamalı ekk ile tahmin edilip indirgenmiş formda yazılır.Boş hipotez rho değerinin sıfıra eşit olması ve 12. sıradan IBS olmadığı anlamına gelir.Alternatif hipotez ise rho değerinin sıfıra eşit olmadığı ve 12. sıradan içsel bağıntı sorununun  olduğu durumu gösterir n(R2y1-r2y2) değerinin hesaplanan kikare değerinden büyük çıkmasıyla boş hipotez reddedilir. bu durum için boş hipotez gecikme sayısı olan p değerinin 0 olduğudur., yani ibs olmadığıdır.
+
+```{r}
+bgtest(ikiaekk1, order = 12, data = veriler)
+bgtest(ikiaekk2, order = 12, data = veriler)
+bgtest(ikiaekk3, order = 12, data = veriler)
+```
+
+3 modelde de 12. sıradan içsel bağıntı sorunu bulunmaktadır. 
+İçsel bağıntı sorunun çözümü için C-O dönüştürmesi ya da 2 aşamalı durbin watson dönüştürmesi yapılabilir.
+
+##2 aşamalı durbin watson dönüştürmesi
+
+Modellerde 12. sıradan içsel bağıntı olduğundan sorunun giderilmesi için dönüştürme yapılması gerekir.
+
+Modelin 12. sıradan gecikmelileri alınır.
+
+$$mh_{t-12}=\theta_0+\theta_1y_{t-12}+\theta_2reer_{t-12}+\epsilon_{1t-12}$$
+
+$$y_{t-12}=\theta_0+\theta_1mh_{t-12}+\theta_2rk_{t-12}+\epsilon_{2t-12}$$
+
+$$x_{t-12}=\theta_0+\theta_1mh_{t-12}+\theta_2reer_{t-12}+\theta_3rk_{t-12}+\epsilon_{3t-12}$$
+
+Daha sonra $\rho_12$  katsayısı ile çarpılarak $mh_t$ modelinden çıkarılır. Dönüştürmede katsayıların hepsinin aynı anda işleme tabi tutulması gerekir.
+
+$$
+\begin{aligned}
+[mh_t-(\rho_12mh_t-{12})] =&\ \theta_0(1-\rho_{12})\\[1.5em]
++&\ \theta_1(y-\rho_{12}y_{t-12})\\[1.5em]
++&\ \theta_2(reer-\rho_{12}reer_{t-12})\\[1.5em]
++&\ \epsilon_{1t} - \rho_{12}\epsilon_{1t-12}
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
+[y_t-(\rho_12y_t-{12})] =&\ \theta_0(1-\rho_{12})\\[1.5em]
++&\ \theta_1(mh-\rho_{12}y_{t-12})\\[1.5em]
++&\ \theta_2(rk-\rho_{12}rk_{t-12})\\[1.5em]
++&\ \epsilon_{2t} - \rho_{12}\epsilon_{2t-12}
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
+[x_t-(\rho_12x_t-{12})] =&\ \theta_0(1-\rho_{12})\\[1.5em]
++&\ \theta_1(mh-\rho_{12}mh_{t-12})\\[1.5em]
++&\ \theta_2(reer-\rho_{12}reer_{t-12})\\[1.5em]
++&\ \theta_3(rk-\rho_{12}rk_{t-12})\\[1.5em]
++&\ \epsilon_{3t} - \rho_{12}\epsilon_{3t-12}
+\end{aligned}
+$$
+
+Bu model 2 aşamalı EKK yöntemiyle tahmin edilir ve $\rho$ katsayılarının tahmin değerlerine ulaşılır. $\hat.\rho$ değerleri ile değişkenlerin gecikmelileri çarpılır. Buradan da değişkenlerin yıldızlı hallerine ulaşılır ve değikenlerin yıldızlı halleriyle yeni bir model oluşturulur. Bu yeni oluşturulan model EKK ile tahmin edilerek sorunun giderilip giderilmediği yeniden test edilir.
+
+```{r}
+yt <- lm(y ~ reer + rk + ystar, data = veriler)
+summary(ikiaekk1)
+ytahminmh <- predict(yt)
+ikiadurbinmh <- lm(mh ~ + lag(mh, 12) + ytahminmh + lag(y, 12) + reer + lag(reer, 12), data = veriler)
+summary(ikiadurbinmh)
+rho1 <- summary(ikiadurbinmh)$coefficients[2,1]
+ytstar <- veriler$y - rho1 * lag(veriler$y)
+mhstar <- veriler$mh - rho1 * lag(veriler$mh)
+reerstar <- veriler$reer - rho1 * lag(veriler$reer)
+sonmhstar <- data.frame(mhstar = mhstar[1:133], ytstar = ytstar[1:133], reerstar = reerstar[1:133])
+ikiadurbinmh2 <- lm(mhstar ~ ytstar + reerstar, data = sonmhstar)
+summary(ikiadurbinmh2)
+
+
+
+
+mht <- lm(mh ~ reer + rk + ystar, data = veriler)
+summary(ikiaekk2)
+mhtahminy <- predict(mht)
+ikiadurbiny <- lm(y ~ + lag(y, 12) + mhtahminy + lag(mh, 12) + rk + lag(rk, 12), data = veriler)
+summary(ikiadurbiny)
+rho2 <- summary(ikiadurbiny)$coefficients[2,1]
+ytstar <- veriler$y - rho2 * lag(veriler$y)
+mhstar <- veriler$mh - rho2 * lag(veriler$mh)
+rkstar <- veriler$rk - rho2 * lag(veriler$rk)
+sonystar <- data.frame(mhstar = mhstar[1:133], ytstar = ytstar[1:133], rkstar = rkstar[1:133])
+ikiadurbiny2 <- lm(ytstar ~ mhstar + rkstar, data = sonystar)
+summary(ikiadurbiny2)
+
+
+
+mht <- lm(mh ~ reer + rk + ystar, data = veriler)
+summary(ikiaekk3)
+mhtahminx <- predict(mht)
+ikiadurbinx <- lm(x ~ + lag(x, 12) + mhtahminx + lag(mh, 12) + reer + lag(reer, 12) + ystar + lag(ystar, 12), data = veriler)
+summary(ikiadurbinx)
+rho3 <- summary(ikiadurbinx)$coefficients[2,1]
+ystarstar <- veriler$ystar - rho3 * lag(veriler$ystar)
+mhstar <- veriler$mh - rho3 * lag(veriler$mh)
+xstar <- veriler$x - rho3 * lag(veriler$x)
+reerstar <- veriler$reer - rho3 * lag(veriler$reer)
+sonxstar <- data.frame(mhstar = mhstar[1:133], xstar = xstar[1:133], ystarstar = ystarstar[1:133], reerstar = reerstar[1:133])
+ikiadurbinx2 <- lm(xstar ~ mhstar + reerstar + ystarstar, data = sonxstar)
+summary(ikiadurbinx2)
+```
+
+
+
+##6.2 Değişen Varyans Sorunu
+
+##white testi
+
+Model 2 aşamalı ekk ile tahmin edilir. Hata teriminin tahminlerinin kareleri denklemi oluşturulur. Bu denkleme yapısal modeldeki değişkenler, kareleri, değişkenlerin birbirleri ile çarpımı eklenir. Oluşturulan model ekk ile tahmin edilir. R2 değeri ya da F istatistiği ile ana model ve yardımcı modelin rss değerlerinden boş hipotezi kabul ya da reddeceğimize karar veririz. Hesaplanan değer tablo değerinden büyükse boş hipotez reddedilir. Boş hipotezimiz yardımcı modelin değişkenlerinin katsayılarının sıfıra eşit oluğu yani, değişen varyans sorunu olmamasıdır.
+ny(R^2y1-R^2y2) test istatistiği hesaplanarak X^2(k-1) tablo değeri ile karşılaştırılabilir.K-1 Bize modelde sabit terim hariç değişken adedini veren serbestlik derecesidir.Bu testte p-value değerlerine bakarak sonuca ulaştık.
+
+Ho : yardımcı model katsayıları = 0
+ha : en az biri sıfır değil
+
+```{r}
+bptest(ikiaekk1, ~ y + I(y^2) + reer + I(reer^2), data = veriler)
+bptest(ikiaekk2, ~ mh + I(mh^2) + rk + I(rk^2) + reer, data = veriler)
+bptest(ikiaekk3, ~ ystar + I(ystar^2) + mh + I(mh^2) + reer + I(reer^2), data = veriler)
+```
+
+3 model için de white formunda dvs yoktur. Zaman serileri ile çalıştığımız için, white formunda dvs bulmamamız normal bir sonuçtur ve bakmamız gereken arch formunda dvs'dir.
+
+##Arch Formunda Değişen Varyans Testi
+
+```{r}
+resids1 <- resid(ikiaekk1)
+resids11 <- resids1^2
+auxreg1 <- lm(resids11 ~ lag(resids11, 12))
+summary(auxreg1)
+r2_1 <- summary(auxreg1)$r.squared
+t <- nrow(veriler)
+test.stat1 <- t * r2_1
+critical.value <- qchisq(0.95, df = 12)
+test.stat1
+critical.value
+
+resids2 <- resid(ikiaekk2)
+resids22 <- resids2^2
+auxreg2 <- lm(resids22 ~ lag(resids22, 12))
+summary(auxreg2)
+r2_2 <- summary(auxreg2)$r.squared
+t <- nrow(veriler)
+test.stat2 <- t * r2_2
+critical.value <- qchisq(0.95, df = 12)
+test.stat2
+critical.value
+
+resids3 <- resid(ikiaekk3)
+summary(resids3)
+resids33 <- resids3^2
+summary(resids33)
+auxreg3 <- lm(resids33 ~ lag(resids33, 12))
+summary(auxreg3)
+r2_3 <- summary(auxreg3)$r.squared
+t <- nrow(veriler)
+test.stat3 <- t * r2_3
+critical.value <- qchisq(0.95, df = 12)
+test.stat3
+critical.value
+```
+
+Hata terimleri varyansı, önceki dönem hata terimleriyle korelasyon içerisinde çıktı. Arch formunda değişen varyans sorunu tespit edildi. 
+ho: p1 = p2 = ... = p12 = 0
+ha: en az biri değil
+
+Bu durumda test istatikleri kritik değerlerden büyük olduğu için boş hipotez reddedilir. Sorunun kaynağı biliniyorsa modeli sorun olan değişkenin  bilinmiyor ise hata teriminin standart sapmasına bölüyoruz.
+
+
+##Değişen Varyans Probleminin Çözümü: Düzeltilmiş Standart Hatalar 
+Düzeltilmemiş standart hataların daha küçük olduğu tespit edildi. Bu “Heteroskedasticity Consistent Covariances (White)” düzeltmesinin katsayılara ait t-istatistiklerini düşürdüğü anlamına gelir. DVS'de kaynağı biliniyorsa, modelin her iki tarafını söz konusu kaynağın standart hatasına bölğnerek model dömnüştürülebilir. Eğer kaynağı bilinmiyorsa hata terimi karelerinin kareköküne bölünerek de düzeltilebilir.
+
+```{r}
+coeftest(myreg1, vcov = vcovHC(myreg1, type = "HC1"))
+coeftest(myreg2, vcov = vcovHC(myreg2, type = "HC1"))
+coeftest(myreg3, vcov = vcovHC(myreg3, type = "HC1"))
+```
+
+
+
+##6.3 Reset Testi
+
+Reset testi coklu doğrusal regresyon modelinde tanımlama hatası sorunu olup olmadığını araştıran bir testtir.Modelin eksik belirlenmesi veya ölçme hatasının olması modelde tanımlama hatası olduğunu gösterir. Reset testi boş hipotezin reddi halinde ne yapılması gerektiğini söylemediği için yetersiz bir testtir. Reset testi fonksiyonel biçim testidir. 
+
+Ho : tanımlama hatası yoktur
+Ha : tanımlama hatası vardır
+Sonuçlar incelendiğinde p-value değerleri yüzde beş anlamlılık düzeyinde 0.05 ten büyük olduğu için boş hipotez kabul edilecektir. Reset testi yapılırken sağ taraf değişkeninin ikinci üçüncü veya dördüncü dereceden kuvveti modele eklenerek test yapılabilir.En fazla dördüncü dereceden kuvveti eklenmektedir cünkü daha üst kuvvetler eklendiğinde serbestlik derecesini eritmektedir. 
+
+```{r}
+resettest(ikiadurbinmh2, power = 2, type = "fitted")
+resettest(ikiadurbiny2, power = 2, type = "fitted")
+resettest(ikiadurbinx2, power = 2, type = "fitted")
+
+
+```
+
+##6.4 Chow Yapısal Kırılma Testi
+
+Yapısal kırılmanın var olup olmadığını araştırdığımız b
+r testtir.Bu test yapısal kırılmanın sabit terimden mi eğim katsayılarından mı kaynaklandığını bize söylemez.
+Chow testi yapılırken, ana model yapısal kırılmanın var olduğunu düşünülen yılın sonrası ve öncesi olmak üzere iki parçaya ayrılır ve bu modellerin RSS(hata terimi kareleri toplamı) elde edilerek test yapılır. Biz modelimizde ülkede krizin olduğunu düşündüğümüz 140. veri için yani ağustos 2018 verisi için test yaptık.P-value değerimiz %5 anlamlılık düzeyinde boş hipotezin kabul eden bir düzeydedir.
+H0 =yapısal kırılma yoktur
+H1 = yapısal kırılma vardır.
+
+
+```{r}
+sctest(myreg1, type = "Chow", point = 140)
+sctest(myreg2, type = "Chow", point = 140)
+sctest(myreg3, type = "Chow", point = 140)
+```
+
+2018 Ağustos ayında yapısal kırılma olup olmadığını test ettik. Fakat chow testi ile herhangi bir yapısal kırılmaya rastlanmamıştır.
+
+
+
+
+
+
+##2 AŞAMALI DURBİN YÖNTEMİYLE ÇÖZÜLEN MODELLERE BG-LM TESTİ
+
+Boş hipotez rho değerinin sıfıra eşit olması ve 12. sıradan IBS olmadığı anlamına gelir.Alternatif hipotez ise rho değerinin sıfıra eşit olmadığı ve 12. sıradan içsel bağıntı sorununun  olduğu durumu gösterir.
+
+```{r}
+bgtest(mhstar ~ ytstar + reerstar, order = 12 , data = sonmhstar)
+bgtest(ytstar ~ mhstar + rkstar, order = 12 , data = sonystar)
+bgtest(mhstar ~ mhstar + reerstar + ystarstar, order = 12 , data = sonxstar)
+
+```
+##Katsayı İçin Testler ve Yorumlanması
+ 2aekk, ekk ve dolaylı ekk sonuçlarına bakarken R^2 değerimizin bize anlamlı sonuçlar vermesi için sorunsuz modele ihtiyacımız vardır.İki aşamalı durbin yöntemiyle modelimizi çözdğkten ve sorunsuz modeli elde ettikten sonra artık R^2 değerleriyle modelimizi yorumlayabiliriz.R2nin zaman serilerinde 0.9 dan büyük olması iyi bir model olduğunu ifade eder.Bizim modelimizde R^2 değeri %5-6 bandındadır. Bu da çok düşük açıklama gücünü ifade eder.Modele yeni değişken ekleyerek modelin açıklama gücünü arttırabilirizfakat bu durumda düzeltilmiş R^2 değerine bakmak gerekir. Mh modelimizdeki düzeltilmiş R^2 değeri sıfırdan küçük bir değer almıştır bunun anlamı ise sağ taraf değişkeni Mh'nin örneklem ortalamasının Mh'deki değişmeleri sol taraf değişkenlerinden daha iyi açıkladığını gösterir.Düzeltilmiş R^2 sıfırann  küçük ise sıfır gibi kabul edilir.
+İki aşamalı ekk sonucunda Mh modellimizdeki katsayıların anlamlılığını test etmek için her birinin prob. değerine baktığımızda 5 anlamlılık düzeyinde katsayıların anlamsız olduğu sonucuna ulaşırız.Y modelinde ise prob değerine bakıp test ettiğimizde k değişkeni anlamlı iken mh değişkeni anlamlı değildir.Üçüncü modelde ise sadece mh değişkeni anlmalıdır.Yorum yaparken anlamlı değişkenler üzerinden yorum yapılmalıdır.
+
+```{r}
+
+summary(ikiadurbinmh2)
+summary(ikiadurbiny2)
+summary(ikiadurbinx2)
+
+
+```
+
+
+###Modelin Genel Anlamlılığının Yorumlanması
+
+P-value değerlerine bakıldığında modellerimiz genel olarak anlamlıdır.Sanayi üretim endeksi ve ihracat modeller. için p-value değerlerimiz 0,05'ten küçüktür, bu modellerin  modelin anlamlı olduğu sonucuna ulaşırız. Hammadde aramalı ithalatı modelimiz ise anlamsız çıkmıştır.
+Modellerimiz ekonometrik sorunlar çözüldükten sonra anlamlı hale gelmiştir fakat sağ taraf değişkenlerinin sol taraf değişkenlerini açıklama güçleri düşük olduğundan modele yeni değişken, gecikmeli değişken veya kukla değişken eklenerek modeldeki anlamlılıkm derecesi yükseltilebilir. Geçikmeli değişken eklenirken serbestlik derecesinin erimesi faktörü göz önüne alınmalıdır.
+
+##Değerlendirme ve Sonuç
+
+İhracat arttırılmak istenirse hammadde aramalı ithalatındaki %1'lik artış ihracatı % 107.5'lik artış yaratacağı için bu değişken üzerinden artış yapılmalıdır.Sanayi üretim endeksi arttırılmak istenirse Reel kredi oranı arttırılarak bu sağlanmaya çalışılmalıdır çünkü reel kredi hacmindeki %1'lik sanayi üretimini %150 arttırır.
+
+
+##Referanslar
+
+1)Mercan, Mehmet. "Kredi hacmindeki değişimlerin ekonomik büyümeye etkisi: Türkiye ekonomisi için sınır testi yaklaşımı.".Bankacılar Dergisi.84 (2013): 54-71.
+2) Takim, Abdullah. "Türkiye’de GSYİH ile ihracat arasındaki ilişki: granger nedensellik testi.".Atatürk Üniversitesi Sosyal Bilimler Enstitüsü Dergisi.14.2 (2010): 1-16.
+3)Gül Ekrem, Ekinci Aykut, " Türkiye’de Reel Döviz Kuru ile İhracat ve İthalat Arasındaki Nedensellik İlişkisi: 1990 – 2006 « Dumlupınar Üniversitesi, Sosyal Bilimler Dergisi Sayı:16,  Aralık 2006.
+4)Gerni, Cevat-Ömer S. Emsen-Mustafa K. Değer (2008), “İthalata Dayalı İhracat ve Ekonomik 
+    Büyüme: 1980- 2006 Türkiye Deneyimi”, 2. Ulusal İktisat Kongresi, İzmir. 
+5).Uğur, A. (2008). Import and Economic Growth in Turkey:
+   Evidence from Multivariate VAR Analysis. EAST-WEST Journal of  Economics and Business Vol. XI –     2008:54-75, No 1 & No 2.
+6) LEE, Jong-Wha (1995), "Capital Goods Imports and Long-Run Growth", Journal of
+ Development Economics, 48 (1): 91-110.
+
+https://stats.oecd.org/ (Erişim tarihi: 06.05.2019)
+https://evds2.tcmb.gov.tr/  (Erişim tarihi:06.05.2019)
+http://eremrah.com/articles/index.html (E.T:10.05.2019)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+```
+
+
+
+
+```{r cars}
+summary(cars)
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
